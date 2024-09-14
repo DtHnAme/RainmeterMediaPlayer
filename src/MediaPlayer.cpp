@@ -372,7 +372,7 @@ void MediaPlayer::UpdateCover(hstring newPlayerName, MediaProperties props)
 void MediaPlayer::UpdateValues(hstring newPlayerName, MediaProperties props, PlaybackInfo playback, TimelineProperties timeline)
 {
 	playerName = newPlayerName;
-	artist = props.Artist();
+	artist = props.Artist().empty() ? props.AlbumArtist() : props.Artist();
 	album = props.AlbumTitle();
 	title = props.Title();
 	number = props.TrackNumber();
