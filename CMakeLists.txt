@@ -120,13 +120,6 @@ set(PROJECT_NAME MediaPlayer)
 ################################################################################
 # Source groups
 ################################################################################
-set(no_group_source_files
-    ".gitignore"
-    "cpp.hint"
-    "README.md"
-)
-source_group("" FILES ${no_group_source_files})
-
 set(Header_Files
     "resource.h"
     "src/ImageUtils.h"
@@ -143,7 +136,6 @@ set(Source_Files
 source_group("Source Files" FILES ${Source_Files})
 
 set(ALL_FILES
-    ${no_group_source_files}
     ${Header_Files}
     ${Source_Files}
 )
@@ -346,45 +338,45 @@ endif()
 ################################################################################
 # Post build events
 ################################################################################
-if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
-    add_custom_command_if(
-        TARGET ${PROJECT_NAME}
-        POST_BUILD
-        COMMANDS
-        COMMAND         $<CONFIG:Debug> copy /Y "$<SHELL_PATH:$<TARGET_FILE:${PROJECT_NAME}>>"  "%AppData%\\Rainmeter\\Plugins\\"
-        COMMAND         $<CONFIG:Debug> robocopy "$ENV{MSBuildProjectDirectory}\\sample_skin" "$ENV{HOMEDRIVE}$ENV{HOMEPATH}\\Documents\\Rainmeter\\Skins\\${PROJECT_NAME}_Debug" /PURGE /E
-        COMMAND         $<CONFIG:Debug> if %errorlevel% leq 1 exit 0 else exit %errorlevel%
-        COMMAND       $<CONFIG:Release> copy /Y "$<SHELL_PATH:$<TARGET_FILE:${PROJECT_NAME}>>" "$<SHELL_PATH:${CMAKE_SOURCE_DIR}/>release\\x64\\${TARGET_NAME}.dll*"
-        COMMAND       $<CONFIG:Release> robocopy "$ENV{MSBuildProjectDirectory}\\sample_skin" "$<SHELL_PATH:${CMAKE_SOURCE_DIR}/>release\\${PROJECT_NAME}" /PURGE /E
-        COMMAND       $<CONFIG:Release> del "$<SHELL_PATH:${CMAKE_SOURCE_DIR}/>release\\${PROJECT_NAME}\\MediaPlayer_Debug.ini"
-        COMMAND       $<CONFIG:Release> if %errorlevel% leq 1 exit 0 else exit %errorlevel%
-        COMMAND $<CONFIG:Releasestatic> xcopy /y "$<SHELL_PATH:$<TARGET_FILE:${PROJECT_NAME}>>" "$<SHELL_PATH:${CMAKE_SOURCE_DIR}/>release\\static_x64\\${TARGET_NAME}.dll*"
-    )
-elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
-    add_custom_command_if(
-        TARGET ${PROJECT_NAME}
-        POST_BUILD
-        COMMANDS
-        COMMAND         $<CONFIG:Debug> copy /Y "$<SHELL_PATH:$<TARGET_FILE:${PROJECT_NAME}>>"  "%AppData%\\Rainmeter\\Plugins\\"
-        COMMAND         $<CONFIG:Debug> robocopy "$ENV{MSBuildProjectDirectory}\\sample_skin" "$ENV{HOMEDRIVE}$ENV{HOMEPATH}\\Documents\\Rainmeter\\Skins\\${PROJECT_NAME}_Debug" /PURGE /E
-        COMMAND         $<CONFIG:Debug> if %errorlevel% leq 1 exit 0 else exit %errorlevel%
-        COMMAND       $<CONFIG:Release> xcopy /y "$<SHELL_PATH:$<TARGET_FILE:${PROJECT_NAME}>>" "$<SHELL_PATH:${CMAKE_SOURCE_DIR}/>release\\x32\\${TARGET_NAME}.dll*"
-        COMMAND $<CONFIG:Releasestatic> xcopy /y "$<SHELL_PATH:$<TARGET_FILE:${PROJECT_NAME}>>" "$<SHELL_PATH:${CMAKE_SOURCE_DIR}/>release\\static_x32\\${TARGET_NAME}.dll*"
-    )
-endif()
+# if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
+#    add_custom_command_if(
+#        TARGET ${PROJECT_NAME}
+#        POST_BUILD
+#        COMMANDS
+#        COMMAND         $<CONFIG:Debug> copy /Y "$<SHELL_PATH:$<TARGET_FILE:${PROJECT_NAME}>>"  "%AppData%\\Rainmeter\\Plugins\\"
+#        COMMAND         $<CONFIG:Debug> robocopy "$<SHELL_PATH:${CMAKE_SOURCE_DIR}\\sample_skin" "$ENV{HOMEDRIVE}$ENV{HOMEPATH}\\Documents\\Rainmeter\\Skins\\${PROJECT_NAME}_Debug" /PURGE /E
+#        COMMAND         $<CONFIG:Debug> if %errorlevel% leq 1 exit 0 else exit %errorlevel%
+#        COMMAND       $<CONFIG:Release> copy /Y "$<SHELL_PATH:$<TARGET_FILE:${PROJECT_NAME}>>" "$<SHELL_PATH:${CMAKE_SOURCE_DIR}/>release\\x64\\${TARGET_NAME}.dll*"
+#        COMMAND       $<CONFIG:Release> robocopy "$<SHELL_PATH:${CMAKE_SOURCE_DIR}\\sample_skin" "$<SHELL_PATH:${CMAKE_SOURCE_DIR}/>release\\${PROJECT_NAME}" /PURGE /E
+#        COMMAND       $<CONFIG:Release> del "$<SHELL_PATH:${CMAKE_SOURCE_DIR}/>release\\${PROJECT_NAME}\\MediaPlayer_Debug.ini"
+#        COMMAND       $<CONFIG:Release> if %errorlevel% leq 1 exit 0 else exit %errorlevel%
+#        COMMAND $<CONFIG:Releasestatic> xcopy /y "$<SHELL_PATH:$<TARGET_FILE:${PROJECT_NAME}>>" "$<SHELL_PATH:${CMAKE_SOURCE_DIR}/>release\\static_x64\\${TARGET_NAME}.dll*"
+#    )
+# elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
+#    add_custom_command_if(
+#        TARGET ${PROJECT_NAME}
+#        POST_BUILD
+#        COMMANDS
+#        COMMAND         $<CONFIG:Debug> copy /Y "$<SHELL_PATH:$<TARGET_FILE:${PROJECT_NAME}>>"  "%AppData%\\Rainmeter\\Plugins\\"
+#        COMMAND         $<CONFIG:Debug> robocopy "$<SHELL_PATH:${CMAKE_SOURCE_DIR}\\sample_skin" "$ENV{HOMEDRIVE}$ENV{HOMEPATH}\\Documents\\Rainmeter\\Skins\\${PROJECT_NAME}_Debug" /PURGE /E
+#        COMMAND         $<CONFIG:Debug> if %errorlevel% leq 1 exit 0 else exit %errorlevel%
+#        COMMAND       $<CONFIG:Release> xcopy /y "$<SHELL_PATH:$<TARGET_FILE:${PROJECT_NAME}>>" "$<SHELL_PATH:${CMAKE_SOURCE_DIR}/>release\\x32\\${TARGET_NAME}.dll*"
+#        COMMAND $<CONFIG:Releasestatic> xcopy /y "$<SHELL_PATH:$<TARGET_FILE:${PROJECT_NAME}>>" "$<SHELL_PATH:${CMAKE_SOURCE_DIR}/>release\\static_x32\\${TARGET_NAME}.dll*"
+#    )
+# endif()
 
 ################################################################################
 # Dependencies
 ################################################################################
 if("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x64")
     set(ADDITIONAL_LIBRARY_DEPENDENCIES
-        "API\x64\Rainmeter;"
+        "${CMAKE_SOURCE_DIR}/API/x64/Rainmeter.lib;"
         "Gdiplus;"
         "WindowsApp"
     )
 elseif("${CMAKE_VS_PLATFORM_NAME}" STREQUAL "x86")
     set(ADDITIONAL_LIBRARY_DEPENDENCIES
-        "API\x32\Rainmeter;"
+        "${CMAKE_SOURCE_DIR}/API/x32/Rainmeter.lib;"
         "Gdiplus;"
         "WindowsApp"
     )
